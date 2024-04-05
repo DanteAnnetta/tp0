@@ -1,5 +1,5 @@
 #include "client.h"
-
+#include <string.h>
 int main(void)
 {
 	/*---------------------------------------------------PARTE 2-------------------------------------------------------------*/
@@ -19,6 +19,10 @@ int main(void)
 	// Usando el logger creado previamente
 	// Escribi: "Hola! Soy un log"
 
+	logger = log_create("tp0.log" , "CLIENT" , true , LOG_LEVEL_INFO);
+	log_info(logger , "Hola! Soy un log");
+	//log_destroy(logger);
+
 
 	/* ---------------- ARCHIVOS DE CONFIGURACION ---------------- */
 
@@ -28,6 +32,15 @@ int main(void)
 	// dejamos en las variables 'ip', 'puerto' y 'valor'
 
 	// Loggeamos el valor de config
+
+	config = config_create("cliente.config");
+	ip = config_get_string_value(config , "IP");
+	puerto = config_get_string_value(config , "PUERTO");	
+	valor = config_get_string_value(config , "CLAVE");
+
+	log_info(logger , valor);
+	log_info(logger , ip);
+	log_info(logger , puerto);
 
 
 	/* ---------------- LEER DE CONSOLA ---------------- */
@@ -47,6 +60,7 @@ int main(void)
 	paquete(conexion);
 
 	terminar_programa(conexion, logger, config);
+	log_destroy(logger);
 
 	/*---------------------------------------------------PARTE 5-------------------------------------------------------------*/
 	// Proximamente
@@ -72,6 +86,10 @@ void leer_consola(t_log* logger)
 
 	// La primera te la dejo de yapa
 	leido = readline("> ");
+	while (leido != NULL && strlen(leido) > 0){
+		log_info(logger , leido);
+		leido = readline("> ");
+	}
 
 	// El resto, las vamos leyendo y logueando hasta recibir un string vacío
 
